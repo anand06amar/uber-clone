@@ -1,57 +1,40 @@
 <template>
-    
-    <main class="login">
-        <section class ="forms">
-
-            <form class="register"  @submit.prevent="register">
-                <h2>Register</h2>
-                <input 
-                type="email" 
-                placeholder="Email address"
-                v-model="register_form.email" />
-                
-            <input type="password"
-            placeholder="password"
-            v-model="register_form.password" />
-            <input 
-            type="submit"
-            value="Register" />
-            </form>
-            <RouterLink to="/login" ><p class="login-link">Already have an account? <a href="/login">Log in</a></p></RouterLink>
-
-        </section>
-    </main>
+  <main class="register-page">
+    <section class="register-form">
+      <h2>Register</h2>
+      <form @submit.prevent="register">
+        <input type="email" placeholder="Email address" v-model="register_form.email" />
+        <input type="password" placeholder="Password" v-model="register_form.password" />
+        <input type="submit" value="Register" />
+      </form>
+      <p class="form-footer">Already have an account? <router-link to="/login">Log in</router-link></p>
+    </section>
+  </main>
 </template>
 
 <script>
 import { ref } from 'vue'
-import { useStore} from 'vuex'
-
+import { useStore } from 'vuex'
 
 export default {
-    setup () {
-        const register_form = ref({});
-        const store = useStore();
+  setup() {
+    const register_form = ref({})
+    const store = useStore()
 
-
-        const register = () => {
-            store.dispatch('register', register_form.value);
-        }
-        return {
-            
-            register_form,
-            
-            register
-
-
-        }
+    const register = () => {
+      store.dispatch('register', register_form.value)
     }
-}
 
+    return {
+      register_form,
+      register
+    }
+  }
+}
 </script>
 
-<style>
- .register-page {
+<style scoped>
+.register-page {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -73,7 +56,7 @@ export default {
   margin-bottom: 20px;
 }
 
-.register-form input[type="text"],
+.register-form input[type="email"],
 .register-form input[type="password"] {
   width: 100%;
   padding: 10px;
@@ -114,5 +97,4 @@ export default {
 .register-form .form-footer a:hover {
   text-decoration: underline;
 }
-
 </style>

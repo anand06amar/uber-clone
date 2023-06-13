@@ -68,8 +68,8 @@ nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #333;
-  color: #fff;
+  background-color: #000000;
+  color: #000000;
   padding: 20px;
   width: 96vw;
 }
@@ -89,7 +89,7 @@ nav {
 }
 
 .nav-item a {
-  color: #fff;
+  color: #f1e8e8;
   text-decoration: none;
 }
 
@@ -115,6 +115,8 @@ nav {
     font-weight: bold;
     color: #ff5a5f;
   }
+  
+
   
   /* .nav-links a {
     margin-right: 10px;
@@ -147,7 +149,7 @@ nav {
     padding: 10px 20px;
     font-size: 16px;
     background-color: #ff5a5f;
-    color: white;
+    color: rgb(0, 0, 0);
     border: none;
     border-radius: 4px;
     cursor: pointer;
@@ -190,5 +192,8 @@ nav {
   text-align: center;
   color: #999999;
   }
+  .black-background {
+  background-color: black;
+}
 </style>
 
