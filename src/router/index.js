@@ -39,13 +39,19 @@ const routes = [
   {
     path: '/booking',
     name: 'SignUp',
-    component: () => import('../views/booking.vue')
+    component: () => import('../views/map.vue')
 
   },
   {
-    path: '/map',
-    name: 'map',
-    component: () => import('../views/map.vue')
+    path: '/trip',
+    name: 'Trip',
+    component: () => import('../views/trip.vue')
+
+  },
+  {
+    path: '/ride',
+    name: 'ride',
+    component: () => import('../views/ride.vue')
 
   }
 ]

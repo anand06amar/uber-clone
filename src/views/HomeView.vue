@@ -1,199 +1,187 @@
 <template>
-  <nav>
-    <div class="logo">Uber</div>
-    <ul class="nav-links">
-      <button @click="$store.dispatch('logout')">Logout</button>
-      <!-- <li class="nav-item">
-        <RouterLink to="locations">logout</RouterLink>
-      </li> -->
-      <!-- <li class="nav-item">
-        <RouterLink to="favourites">Favourites</RouterLink>
-      </li> -->
-      <!-- <li class="nav-item">
-        <RouterLink to="Rides">Rides</RouterLink>
-      </li> -->
-      <!-- <li class="nav-item">
-        <RouterLink to="register">Register</RouterLink>
-      </li> -->
-    </ul>
-  </nav>
   <div class="home">
-      <header class="header">
-        <!-- <h1 class="logo">Uber</h1> -->
-        <!-- <nav class="nav-links">
-         
-        </nav> -->
-      </header>
-  
-      <main class="hero">
-        <h2>Get a ride in minutes</h2>
-        <p>Book a reliable ride in just a few clicks.</p>
-        <RouterLink to="/booking"><button class="btn">Book Now</button></RouterLink>
-      </main>
-  
-      <section class="features">
-        <div class="feature">
-          <img src="../assets/destination.png" alt="Location Icon" />
-          <h3>Choose your destination</h3>
-          <p>Enter your destination and get an estimated fare.</p>
-        </div>
-        <div class="feature">
-          <img src="../assets/car.png" alt="Car Icon" />
-          <h3>Select a ride</h3>
-          <p>Choose from a variety of #available ride options.</p>
-        </div>
-        <div class="feature">
-          <img src="../assets/payment.png" alt="Payment Icon" />
-          <h3>Make a payment</h3>
-          <p>Pay easily with multiple payment options.</p>
-        </div>
-      </section>
-  
-      
-    </div>
+    <nav class="navbar">
+      <div class="logo">Uber</div>
+      <ul class="nav-links">
+        <RouterLink to="/trip"><button class="btn">Trip</button></RouterLink>
+        <button @click="$store.dispatch('logout')">Logout</button>
+       
+      </ul>
+    </nav>
 
+    <header class="hero">
+      <h1 class="hero-title">Uber</h1>
+      <p class="hero-subtitle">Book a reliable ride in just a few clicks</p>
+      <router-link to="/booking" class="btn">Book Now</router-link>
+    </header>
+
+    <section class="features">
+      <div class="feature">
+        <img src="../assets/destination.png" alt="Location Icon" />
+        <h2 class="feature-title">Choose your destination</h2>
+        <p class="feature-description">Enter your destination and get an estimated fare</p>
+      </div>
+      <div class="feature">
+        <img src="../assets/car.png" alt="Car Icon" />
+        <h2 class="feature-title">Select a ride</h2>
+        <p class="feature-description">Choose from a variety of available ride options</p>
+      </div>
+      <div class="feature">
+        <img src="../assets/payment.png" alt="Payment Icon" />
+        <h2 class="feature-title">Make a payment</h2>
+        <p class="feature-description">Pay easily with multiple payment options</p>
+      </div>
+    </section>
+  </div>
 </template>
 
-<script>
-export default {
-  name: 'Navbar',
-}
-</script>
-
-<style scoped>
-nav {
-  margin-top: -70px;
-  margin-left: -8px; /* Reduce the margin here */
-  /* margin-bottom: 0px; */
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #000000;
-  color: #000000;
-  padding: 20px;
-  width: 96vw;
-}
-
-.logo {
-  font-size: 24px;
-  font-weight: bold;
-}
-
-.nav-links {
-  list-style: none;
-  display: flex;
-}
-
-.nav-item {
-  margin-left: 20px;
-}
-
-.nav-item a {
-  color: #f1e8e8;
-  text-decoration: none;
-}
-
-.nav-item a:hover {
-  text-decoration: underline;
-}
-
-.home {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
+<style>
+  /* Global Styles */
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
   }
-  
-  .header {
+
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+  }
+
+  /* Navbar Styles */
+  .navbar {
+    margin-top: -65px;
+    background-color: #333;
+    color: white;
+    padding: 10px;
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    margin-bottom: 20px;
+    align-items: center;
   }
-  
+
   .logo {
     font-size: 24px;
-    font-weight: bold;
-    color: #ff5a5f;
   }
-  
 
-  
-  /* .nav-links a {
-    margin-right: 10px;
-    color: #333333;
-    text-decoration: none;
-    transition: color 0.3s ease;
+  .nav-links {
+    list-style: none;
+    display: flex;
+    align-items: center;
   }
-  
-  .nav-links a:hover {
-    color: #ff5a5f;
-  } */
-  
+
+  .nav-links button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    margin-left: 10px;
+  }
+
+  /* Hero Styles */
   .hero {
     text-align: center;
+    padding: 100px 0;
+    background-color: #333;
+    color: white;
+  }
+
+  .hero-title {
+    font-size: 48px;
+    margin-bottom: 20px;
+    opacity: 0;
+    transform: translateY(-20px);
+    animation: fadeInDown 1s forwards;
+  }
+
+  .hero-subtitle {
+    font-size: 24px;
     margin-bottom: 40px;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 1s forwards;
+    animation-delay: 0.5s;
   }
-  
-  .hero h2 {
-    font-size: 32px;
-    margin-bottom: 10px;
-    color: #333333;
-  }
-  
-  .hero p {
-    font-size: 18px;
-    color: #777777;
-  }
-  
+
   .btn {
-    padding: 10px 20px;
-    font-size: 16px;
-    background-color: #ff5a5f;
-    color: rgb(0, 0, 0);
+    background-color: #ff5e3a;
+    color: white;
+    padding: 16px 32px;
+    font-size: 20px;
     border: none;
-    border-radius: 4px;
+    border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    opacity: 0;
+    transform: scale(0.8);
+    animation: fadeInUp 1s forwards;
+    animation-delay: 1s;
   }
-  
+
   .btn:hover {
-    background-color: #e04044;
+    background-color: #ff784f;
   }
-  
+
+  /* Features Styles */
   .features {
     display: flex;
-    justify-content: space-between;
-    margin-bottom: 40px;
+    justify-content: center;
+    margin-top: 50px;
+    padding: 40px 0;
   }
-  
+
   .feature {
-    flex-basis: 30%;
     text-align: center;
+    max-width: 300px;
+    padding: 30px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    margin: 0 20px;
+    opacity: 0;
+    transform: scale(0.8);
+    animation: fadeInUp 1s forwards;
   }
-  
+
+  .feature:hover {
+    transform: translateY(-10px);
+  }
+
   .feature img {
     width: 80px;
-    height: 80px;
     margin-bottom: 20px;
   }
-  
-  .feature h3 {
+
+  .feature-title {
     font-size: 24px;
     margin-bottom: 10px;
-    color: 333333;
   }
-  
-  .feature p {
-  font-size: 16px;
-  color: #777777;
-  }
-  
-  .footer {
-  text-align: center;
-  color: #999999;
-  }
-  .black-background {
-  background-color: black;
-}
-</style>
 
+  .feature-description {
+    font-size: 16px;
+    color: #777;
+  }
+
+  /* Animation Keyframes */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
