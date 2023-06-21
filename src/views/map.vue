@@ -85,23 +85,28 @@ export default {
 
 .actionButton {
 
-  flex: 1;
-  height: 60px; /* Adjust the height as per your requirements */
-  color:black;
-  border: none;
-  padding: 70px;
-  margin-right: 10px;
-  transition: background-color 0.3s, color 0.3s;
-}
+  display: flex; 
+margin: 0.25rem; 
+background-color: #E5E7EB; 
+transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform; 
+font-size: 1.25rem;
+line-height: 1.75rem; 
+flex-direction: column; 
+flex: 1 1 0%; 
+justify-content: center; 
+align-items: center; 
+height: 8rem; 
+border-radius: 0.5rem; 
 
-.actionButton:last-child {
-  margin-right: 0;
-}
 
-.actionButton:hover {
 
-  background-color: grey;
-  cursor: pointer;
+
+
+
+:hover {
+ --transform-scale-x: 1.05;
+--transform-scale-y: 1.05; 
+ }
 }
 
 .whereTo {
