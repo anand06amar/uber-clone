@@ -27,19 +27,19 @@ const routes = [
   {
     path: '/login',
     name: 'login',
-    component: () => import('../views/login.vue')
+    component: () => import('../components/login.vue')
 
   },
   {
     path: '/register',
     name: 'register',
-    component: () => import('../views/SignUp.vue')
+    component: () => import('../components/SignUp.vue')
 
   },
   {
     path: '/booking',
-    name: 'SignUp',
-    component: () => import('../views/map.vue')
+    name: 'Booking',
+    component: () => import('../components/booking.vue')
 
   },
   {
@@ -51,13 +51,13 @@ const routes = [
   {
     path: '/ride',
     name: 'ride',
-    component: () => import('../views/ride.vue')
+    component: () => import('../components/Search.vue')
 
   },
   {
     path: '/confirm',
     name: 'confirm',
-    component: () => import('../views/Confirm.vue')
+    component: () => import('../components/Confirm.vue')
 
   }
 ]
