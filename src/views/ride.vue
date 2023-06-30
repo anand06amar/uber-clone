@@ -1,78 +1,78 @@
 <template>
-    <div class="wrapper">
-      <div class="image-container">
-        <img src="../assets/left.png" alt="Back Icon" class="back-icon" />
+  <div class="bg-gray-200 h-screen">
+    <router-link to="/booking">
+      <div class="bg-white px-4">
+        <img
+          class="h-12 cursor-pointer"
+          src="https://img.icons8.com/ios-filled/50/000000/left.png"
+        />
       </div>
-      <div class="content-container">
-        <h1>Book a Ride</h1>
-        <div class="input-container">
-          <label for="pickup">Pickup Location</label>
-          <input type="text" id="pickup" placeholder="Enter pickup location" />
-        </div>
-        <div class="input-container">
-          <label for="destination">Destination</label>
-          <input type="text" id="destination" placeholder="Enter destination" />
-        </div>
-        <button class="book-button">Book Now</button>
+    </router-link>
+    <div class="bg-white flex items-center px-4 mb-2">
+      <div class="flex flex-col w-10 mr-2 items-center">
+        <img
+          class="h-2.5"
+          src="https://img.icons8.com/ios-filled/50/9CA3AF/filled-circle.png"
+        />
+        <img
+          class="h-10"
+          src="https://img.icons8.com/ios/50/9CA3AF/vertical-line.png"
+        />
+        <img
+          class="h-3"
+          src="https://img.icons8.com/windows/50/000000/square-full.png"
+        />
       </div>
+      <div class="flex flex-col flex-1">
+        <input
+          class="h-10 bg-gray-200 my-2 rounded-2 p-2 outline-none border-none"
+          placeholder="Enter pickup location"
+          v-model="pickuplocation"
+        />
+        <input
+          class="h-10 bg-gray-200 my-2 rounded-2 p-2 outline-none border-none"
+          placeholder="Where to?"
+          v-model="dropofflocation"
+        />
+      </div>
+      <img
+        class="h-10 w-10 bg-gray-200 rounded-full ml-3"
+        src="https://img.icons8.com/ios/50/000000/plus-math.png"
+      />
     </div>
-  </template>
-  
-  <style>
-  .wrapper {
-    background-color: #fff;
-    height: 100vh;
-    display: flex;
-  }
-  
-  .image-container {
-    padding: 20px;
-  }
-  
-  .back-icon {
-    width: 40px;
-    height: 40px;
-  }
-  
-  .content-container {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-  }
-  
-  h1 {
-    font-size: 24px;
-    margin-bottom: 20px;
-  }
-  
-  .input-container {
-    margin-bottom: 10px;
-  }
-  
-  label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 5px;
-  }
-  
-  input[type="text"] {
-    width: 300px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  button.book-button {
-    padding: 10px 20px;
-    background-color: #4caf50;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    font-weight: bold;
-    cursor: pointer;
-  }
-  </style>
-  
+    <div class="bg-white flex text-l items-center px-4 py-2">
+      <img
+        class="rounded-full bg-gray-400 p-2 mr-2 h-10 w-10"
+        src="https://img.icons8.com/ios-filled/50/ffffff/star--v1.png"
+      />
+      <span>Saved Places (Not available)</span>
+    </div>
+    <router-link
+      :to="{
+        path: '/confirm',
+        query: { pickupCoordinate: pickupCoordinate.join(','), dropoffCoordinate: dropoffCoordinate.join(',') }
+      }"
+    >
+      <div class="bg-black flex text-xl items-center py-2 text-white mt-4 justify-center text-center m-12 transform hover:scale-105 transition cursor-pointer">
+        Confirm Locations
+      </div>
+    </router-link>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      pickuplocation: '',
+      dropofflocation: '',
+      pickupCoordinate: [], // Add an empty array for pickupCoordinate
+      dropoffCoordinate: [] // Add an empty array for dropoffCoordinate
+    };
+  },
+};
+</script>
+
+<style>
+/* Add your styles here */
+</style>

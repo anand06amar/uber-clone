@@ -8,15 +8,37 @@
           <name class="name"></name>
         </profile>
       </header>
+
+
       <div class="actionButtons">
-        <router-link to="/ride" class="actionButton primary">Ride</router-link>
-        <button class="actionButton secondary">Wheels</button>
-        <button class="actionButton tertiary">Reserve</button>
+        <router-link to="/ride" class="actionButton primary">
+          <img
+            src="https://i.ibb.co/cyvcpfF/uberx.png"
+            width="100"
+            height="100"
+          />
+          <div >Ride</div></router-link
+        >
+        <router-link to="/ride" class="actionButton secondary"
+          ><img
+            src="https://i.ibb.co/cyvcpfF/uberx.png"
+            width="100"
+            height="100"
+          />
+          <div>Wheels</div></router-link
+        >
+        
+        <router-link to="/ride" class="actionButton tertiary"
+          ><img
+            src="https://i.ibb.co/cyvcpfF/uberx.png"
+            width="100"
+            height="100"
+          />
+          <div>Reserve</div></router-link
+        >
       </div>
       <div class="whereTo">
-        <inputbutton class="whereToButton">
-          Where to?
-        </inputbutton>
+        <inputbutton class="whereToButton"> Where to? </inputbutton>
       </div>
     </div>
   </div>
@@ -27,13 +49,18 @@ import mapboxgl from 'mapbox-gl';
 
 export default {
   mounted() {
-    mapboxgl.accessToken =
-      'pk.eyJ1IjoiYW5hbmRhbWFyMDYiLCJhIjoiY2xpdTE5cjBzMDN3bzNzb2Nqejc0ZXkwaiJ9.qNHSWQc3SNVPt7QsGrmdaw'; // Replace with your Mapbox access token
-    new mapboxgl.Map({
+    mapboxgl.accessToken = 'pk.eyJ1IjoiYW5hbmRhbWFyMDYiLCJhIjoiY2xpdTE5cjBzMDN3bzNzb2Nqejc0ZXkwaiJ9.qNHSWQc3SNVPt7QsGrmdaw'; // Replace with your Mapbox access token
+    
+    const map = new mapboxgl.Map({
       container: 'map',
       style: 'mapbox://styles/mapbox/streets-v11',
-      zoom: 12,
+      center: [75.7139, 19.7515],
+      zoom: 6,
     });
+
+    new mapboxgl.Marker()
+      .setLngLat([12.554729, 55.70651])
+      .addTo(map);
   },
 };
 </script>
@@ -64,10 +91,7 @@ export default {
 
 .logo {
   height: 100px; /* Adjust the height as per your requirements */
- 
-  
 }
-
 
 .profile {
   display: flex;
@@ -80,33 +104,34 @@ export default {
 
 .actionButtons {
   display: flex;
-  margin-top: 2rem; /* Adjust the margin as per your requirements */
+  justify-content: space-between;
 }
 
 .actionButton {
+  flex: 1;
+  padding: 15px 30px;
+  background-color: #000;
+  color: #fff;
+  border-radius: 24px;
+  text-decoration: none;
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: background-color 0.3s ease;
+  margin-right: 2em; /* Adjust the desired spacing here */
 
-  display: flex; 
-margin: 0.25rem; 
-background-color: #E5E7EB; 
-transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform; 
-font-size: 1.25rem;
-line-height: 1.75rem; 
-flex-direction: column; 
-flex: 1 1 0%; 
-justify-content: center; 
-align-items: center; 
-height: 8rem; 
-border-radius: 0.5rem; 
+  :hover {
+    --transform-scale-x: 1.05;
+    --transform-scale-y: 1.05;
+  }
+}
 
+.actionButton:last-child {
+  margin-right: 0;
+}
 
-
-
-
-
-:hover {
- --transform-scale-x: 1.05;
---transform-scale-y: 1.05; 
- }
+.actionButton:hover {
+  background-color: grey;
+  cursor: pointer;
 }
 
 .whereTo {

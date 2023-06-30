@@ -7,14 +7,20 @@
         <input type="password" placeholder="Password" v-model="register_form.password" />
         <input type="submit" value="Register" />
       </form>
+      <button @click="handleSignInGoogle">Sign in with Google</button>
       <p class="form-footer">Already have an account? <router-link to="/login">Log in</router-link></p>
     </section>
   </main>
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
+import { getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
+
+const router = useRouter()
+const provider = new GoogleAuthProvider()
 
 export default {
   setup() {
@@ -25,9 +31,38 @@ export default {
       store.dispatch('register', register_form.value)
     }
 
+    const handleSignInGoogle = () => {
+      const auth = getAuth()
+      signInWithPopup(auth, provider)
+        .catch((error) => {
+          if (error.code === 'auth/cancelled-popup-request') {
+            // Handle the error when the user cancels the sign-in popup
+            console.log('Sign-in with Google was cancelled by the user.')
+          } else if (error.code === 'auth/popup-closed-by-user') {
+            // Handle the error when the user closes the sign-in popup
+            console.log('Sign-in with Google popup was closed by the user.')
+          } else {
+            // Handle other errors
+            console.error(error)
+          }
+        })
+    }
+
+    onMounted(() => {
+      const auth = getAuth()
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          // User is signed in
+          // Redirect to the home page
+          router.push('/')
+        }
+      })
+    })
+
     return {
       register_form,
-      register
+      register,
+      handleSignInGoogle
     }
   }
 }

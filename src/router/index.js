@@ -53,6 +53,12 @@ const routes = [
     name: 'ride',
     component: () => import('../views/ride.vue')
 
+  },
+  {
+    path: '/confirm',
+    name: 'confirm',
+    component: () => import('../views/Confirm.vue')
+
   }
 ]
 

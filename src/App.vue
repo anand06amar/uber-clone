@@ -1,11 +1,12 @@
 <template>
   <div id="nav" v-if="$store.state.user">
+    
     <!-- <Navbar /> -->
-  <nav>
+  <!-- <nav> -->
     <!-- <router-link to="/">Home</router-link>  -->
     <!-- <router-link to="/about">About</router-link> -->
     <!-- <button @click="$store.dispatch('logout')">Logout</button> -->
-  </nav>
+  <!-- </nav> -->
   </div>
   <router-view/>
 </template>
@@ -15,12 +16,15 @@ import { onBeforeMount } from 'vue'
 import {  useStore } from 'vuex'
 
 
+
+
 // import Navbar from '../HomeView.vue'
 
 export default {
   // name:'App',
   // components: {
-  //   Navbar
+  //   LocationSelector,
+  //   Map,
   // },
   setup() {
     const store = useStore()

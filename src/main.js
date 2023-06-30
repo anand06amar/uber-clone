@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import "mapbox-gl/dist/mapbox-gl.css"
+import './assets/tailwind.css'
 
 
 

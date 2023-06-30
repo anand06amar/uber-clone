@@ -50,7 +50,7 @@
 
   /* Navbar Styles */
   .navbar {
-    margin-top: -65px;
+    margin-top: 0px;
     background-color: #333;
     color: white;
     padding: 10px;
