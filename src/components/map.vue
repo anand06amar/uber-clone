@@ -32,6 +32,30 @@
         </div>
         <div>
           <div class="flex items-center px-4 py-5">
+            <img width="75" src="https://i.ibb.co/Xx4G91m/uberblack.png">
+            <div class="w-full ml-3">
+              <div class="flex items-center justify-between">
+                <div class="text-2xl mb-1">Black</div>
+                <div class="text-xl">£300</div>
+              </div>
+              <div class="text-gray-500">7 hours</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center px-4 py-5">
+            <img width="75" src="https://i.ibb.co/1nStPWT/uberblacksuv.png">
+            <div class="w-full ml-3">
+              <div class="flex items-center justify-between">
+                <div class="text-2xl mb-1">Black Suv</div>
+                <div class="text-xl">£300</div>
+              </div>
+              <div class="text-gray-500">7 hours</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center px-4 py-5">
             <img width="75" src="img/uber/uberxl.png">
             <div class="w-full ml-3">
               <div class="flex items-center justify-between">

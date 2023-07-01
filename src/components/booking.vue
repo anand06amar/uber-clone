@@ -10,7 +10,7 @@
         </header>
   
         <div class="actionButtons">
-          <router-link to="/ride" class="actionButton primary">
+          <router-link to="/Search" class="actionButton primary">
             <img
               src="https://i.ibb.co/cyvcpfF/uberx.png"
               width="100"
@@ -18,16 +18,16 @@
             />
             <div>Ride</div></router-link
           >
-          <router-link to="/ride" class="actionButton secondary"
+          <router-link to="/Search" class="actionButton secondary"
             ><img
               src="https://i.ibb.co/cyvcpfF/uberx.png"
               width="100"
               height="100"
             />
-            <div>Wheels</div></router-link
+           <span>Wheels</span></router-link
           >
   
-          <router-link to="/ride" class="actionButton tertiary"
+          <router-link to="/Search" class="actionButton tertiary"
             ><img
               src="https://i.ibb.co/cyvcpfF/uberx.png"
               width="100"
@@ -36,9 +36,9 @@
             <div>Reserve</div></router-link
           >
         </div>
-        <div class="whereTo">
+        <!-- <div class="whereTo">
           <inputbutton class="whereToButton"> Where to? </inputbutton>
-        </div>
+        </div> -->
       </div>
     </div>
   </template>
