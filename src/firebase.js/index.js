@@ -1,19 +1,28 @@
 import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
+import firebase from 'firebase/compat/app';
+
+
+
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAoZiW1ku-WtTtUludDMtOsIf-CqzNwmuQ",
-  authDomain: "uber-672b0.firebaseapp.com",
-  projectId: "uber-672b0",
-  storageBucket: "uber-672b0.appspot.com",
-  messagingSenderId: "1011152493896",
-  appId: "1:1011152493896:web:0e0b58604321bcf883e77d"
-}
+  apiKey: "AIzaSyBkEXJiZehelraKDd10ddgQXuPW0hnL6IU",
+  authDomain: "uberclone-f48fc.firebaseapp.com",
+  projectId: "uberclone-f48fc",
+  storageBucket: "uberclone-f48fc.appspot.com",
+  messagingSenderId: "906017353127",
+  appId: "1:906017353127:web:37e923eeeb2463f62e9a82"
+};
 
-const app = initializeApp(firebaseConfig)
 
-const auth = getAuth(app)
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+const db = getFirestore(app);
+const auth = getAuth(app);
 
-export { auth } 
 
- 
+
+export { app, analytics, db, auth };
+export default firebase;

@@ -1,5 +1,6 @@
 <template>
-  <div id="nav" v-if="$store.state.user">
+  <div iclass="app-wrapper">
+    <div class="app">
     
     <!-- <Navbar /> -->
   <!-- <nav> -->
@@ -7,62 +8,160 @@
     <!-- <router-link to="/about">About</router-link> -->
     <!-- <button @click="$store.dispatch('logout')">Logout</button> -->
   <!-- </nav> -->
-  </div>
+  
   <router-view/>
+  </div>
+  </div>
 </template>
 
 <script>
-import { onBeforeMount } from 'vue'
-import {  useStore } from 'vuex'
-
-
-
-
-// import Navbar from '../HomeView.vue'
 
 export default {
-  // name:'App',
-  // components: {
-  //   LocationSelector,
-  //   Map,
-  // },
-  setup() {
-    const store = useStore()
+  name: "app",
+  components: { },
+  data() {
+    return {
 
-    onBeforeMount(() => {
-      store.dispatch('fetchUser')
-    })
-
-    // return {
-    //   user: store.state.user
-    // } 
-
-
-  }
-}
+    };
+  },
+  created() {
+  
+  },
+  mounted() {},
+  methods: {
+ 
+  },
+  watch: {
+   
+  },
+};
 </script>
 
 
-
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Quicksand", sans-serif;
 }
 
-nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
+
+.container {
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.link {
+  cursor: pointer;
+  text-decoration: none;
+  text-transform: uppercase;
+  color: black;
+}
+
+.link-light {
+  color: #fff;
+}
+
+// .arrow {
+//   margin-left: 8px;
+//   width: 12px;
+//   path {
+//     fill: #000;
+//   }
+// }
+// .arrow-light {
+//   path {
+//     fill: #fff;
+//   }
+// }
+
+// button,
+// .router-button {
+//   transition: 500ms ease all;
+//   cursor: pointer;
+//   margin-top: 24px;
+//   padding: 12px 24px;
+//   background-color: #303030;
+//   color: #fff;
+//   border-radius: 20px;
+//   border: none;
+//   text-transform: uppercase;
+
+//   &:focus {
+//     outline: none;
+//   }
+
+//   &:hover {
+//     background-color: rgba(48, 48, 48, 0.7);
+//   }
+// }
+
+// .button-ghost {
+//   color: #000;
+//   padding: 0;
+//   border-radius: 0;
+//   margin-top: 50px;
+//   font-size: 15px;
+//   font-weight: 500;
+//   background-color: transparent;
+//   @media (min-width: 700px) {
+//     margin-top: 0;
+//     margin-left: auto;
+//   }
+
+//   i {
+//     margin-left: 8px;
+//   }
+// }
+
+// .button-light {
+//   background-color: transparent;
+//   border: 2px solid #fff;
+//   color: #fff;
+// }
+
+// .button-inactive {
+//   pointer-events: none !important;
+//   cursor: none !important;
+//   background-color: rgba(128, 128, 128, 0.5) !important;
+// }
+
+// .error {
+//   text-align: center;
+//   font-size: 12px;
+//   color: red;
+// }
+
+// .blog-card-wrap {
+//   position: relative;
+//   padding: 80px 16px;
+//   background-color: #f1f1f1;
+//   @media (min-width: 500px) {
+//     padding: 100px 16px;
+//   }
+
+//   .blog-cards {
+//     display: grid;
+//     gap: 32px;
+//     grid-template-columns: 1fr;
+
+//     @media (min-width: 500px) {
+//       grid-template-columns: repeat(2, 1fr);
+//     }
+//     @media (min-width: 900px) {
+//       grid-template-columns: repeat(3, 1fr);
+//     }
+//     @media (min-width: 1200px) {
+//       grid-template-columns: repeat(4, 1fr);
+//     }
+//   }
+// }
 </style>

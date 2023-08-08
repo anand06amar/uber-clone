@@ -1,193 +1,138 @@
 <template>
-  <div class="home">
-    <nav class="navbar">
-      <div class="logo">Uber</div>
-      <ul class="nav-links">
-        <RouterLink to="/trip"><button class="btn">Trip</button></RouterLink>
-        <button @click="$store.dispatch('logout')">Logout</button>
-      </ul>
-    </nav>
-
-    <header class="hero">
-      <h1 class="hero-title">Uber</h1>
-      <p class="hero-subtitle">Book a reliable ride in just a few clicks</p>
-      <router-link to="/booking" class="btn">Book Now</router-link>
-    </header>
-
-    <section class="features">
-      <div class="feature">
-        <img src="../assets/destination.png" alt="Location Icon" />
-        <h2 class="feature-title">Choose your destination</h2>
-        <p class="feature-description">
-          Enter your destination and get an estimated fare
-        </p>
+  <div class="home-page">
+    <div class="options-container">
+      <div
+        class="option driver"
+        @click="goToDriverRegistration"
+        :class="{ 'animated rubberBand': selectedOption === 'driver' }"
+      >
+        <i class="icon fas fa-car"></i>
+        <span>Driver</span>
       </div>
-      <div class="feature">
-        <img src="../assets/car.png" alt="Car Icon" />
-        <h2 class="feature-title">Select a ride</h2>
-        <p class="feature-description">
-          Choose from a variety of available ride options
-        </p>
+      <div
+        class="option rider"
+        @click="goToRiderRegistration"
+        :class="{ 'animated rubberBand': selectedOption === 'rider' }"
+      >
+        <i class="icon fas fa-user"></i>
+        <span>Rider</span>
       </div>
-      <div class="feature">
-        <img src="../assets/payment.png" alt="Payment Icon" />
-        <h2 class="feature-title">Make a payment</h2>
-        <p class="feature-description">
-          Pay easily with multiple payment options
-        </p>
+    </div>
+    <div v-if="selectedOption" class="selected-option">
+      <div
+        class="selected-option-content"
+        :class="{ 'animated slideInDown': selectedOption }"
+      >
+        <h2 v-if="selectedOption === 'driver'">Driver Login</h2>
+        <h2 v-else-if="selectedOption === 'rider'">Rider Registration</h2>
+        <!-- Your driver login and rider registration forms go here -->
       </div>
-    </section>
+      <button @click="deselectOption" class="animated fadeIn">Back</button>
+    </div>
   </div>
 </template>
 
+<script>
+export default {
+  data() {
+    return {
+      selectedOption: null,
+    };
+  },
+  methods: {
+    goToDriverRegistration() {
+      this.$router.push('/driver');
+    },
+    goToRiderRegistration() {
+      this.$router.push('/register');
+    },
+    
+    selectDriver() {
+      this.selectedOption = 'driver';
+    },
+    selectRider() {
+      this.selectedOption = 'rider';
+    },
+    deselectOption() {
+      this.selectedOption = null;
+    },
+  },
+};
+</script>
+
 <style>
-/* Global Styles */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+/* Add CSS styles for animations here, or use CSS frameworks like animate.css */
 
-body {
-  font-family: Arial, sans-serif;
-  background-color: #f2f2f2;
-}
-
-/* Navbar Styles */
-.navbar {
-  margin-top: 0px;
-  background-color: #333;
-  color: white;
-  padding: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.logo {
-  font-size: 24px;
-}
-
-.nav-links {
-  list-style: none;
-  display: flex;
-  align-items: center;
-}
-
-.nav-links button {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-  margin-left: 10px;
-}
-
-/* Hero Styles */
-.hero {
-  text-align: center;
-  padding: 100px 0;
-  background-color: #333;
-  color: white;
-}
-
-.hero-title {
-  font-size: 48px;
-  margin-bottom: 20px;
-  opacity: 0;
-  transform: translateY(-20px);
-  animation: fadeInDown 1s forwards;
-}
-
-.hero-subtitle {
-  font-size: 24px;
-  margin-bottom: 40px;
-  opacity: 0;
-  transform: translateY(20px);
-  animation: fadeInUp 1s forwards;
-  animation-delay: 0.5s;
-}
-
-.btn {
-  background-color: #ff5e3a;
-  color: white;
-  padding: 16px 32px;
-  font-size: 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  opacity: 0;
-  transform: scale(0.8);
-  animation: fadeInUp 1s forwards;
-  animation-delay: 1s;
-}
-/*  */
-.btn:hover {
-  background-color: #ff784f;
-}
-
-/* Features Styles */
-.features {
+/* Sample styles for the options */
+.options-container {
   display: flex;
   justify-content: center;
-  margin-top: 50px;
-  padding: 40px 0;
+  margin-top: 100px;
 }
 
-.feature {
-  text-align: center;
-  max-width: 300px;
-  padding: 30px;
-  background-color: white;
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-  margin: 0 20px;
-  opacity: 0;
-  transform: scale(0.8);
-  animation: fadeInUp 1s forwards;
+.option {
+  cursor: pointer;
+  padding: 20px;
+  margin: 20px;
+  border: 1px solid #007bff;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 200px;
+  background-color: #f9f9f9;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
 }
 
-.feature:hover {
-  transform: translateY(-10px);
+.option:hover {
+  background-color: #007bff;
+  color: #fff;
+  transform: translateY(-5px);
 }
 
-.feature img {
-  width: 80px;
-  margin-bottom: 20px;
-  margin: auto;
-}
-
-.feature-title {
-  font-size: 24px;
+.icon {
+  font-size: 40px;
   margin-bottom: 10px;
+  color: #007bff;
 }
 
-.feature-description {
+/* Sample styles for the selected option */
+.selected-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 50px;
+}
+
+.selected-option-content {
+  text-align: center;
+}
+
+h2 {
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+button {
+  cursor: pointer;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  margin-top: 20px;
   font-size: 16px;
-  color: #777;
 }
 
-/* Animation Keyframes */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Additional animation for the button */
+button.animated.fadeIn {
+  animation-delay: 0.5s;
 }
 </style>
+
+<!-- Add the following link to your index.html file to use animate.css -->
+<!-- <link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+/> -->

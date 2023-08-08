@@ -1,15 +1,15 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import { auth } from '../firebase.js'
+// import { auth } from '../firebase'
 // import login from '../views/login.vue'
 // import SignUp from '../views/SignUp.vue'
-
-
+import Search from '../components/Search.vue'
+import Map from '../components/map.vue'
 
 const routes = [
   {
     path: '/',
-    name: 'home',
+    name: 'Home',
     component: HomeView,
     meta: {
       requiresAuth: true
@@ -28,6 +28,24 @@ const routes = [
     path: '/login',
     name: 'login',
     component: () => import('../components/login.vue')
+
+  },
+  {
+    path: '/uberX',
+    name: 'login',
+    component: () => import('../components/uberX.vue')
+
+  },
+  {
+    path: '/driver',
+    name: 'driver',
+    component: () => import('../components/driverregister.vue')
+
+  },
+  {
+    path: '/home',
+    name: 'home',
+    component: () => import('../components/Home.vue')
 
   },
   {
@@ -51,13 +69,18 @@ const routes = [
   {
     path: '/Search',
     name: 'ride',
-    component: () => import('../components/Search.vue')
+    component: Search,
+   
 
   },
   {
     path: '/confirm',
     name: 'confirm',
-    component: () => import('../components/Confirm.vue')
+    component: Map,
+    props: (route) => ({
+      pickuplocation: route.query.pickuplocation,
+      dropofflocation: route.query.dropofflocation,
+    })
 
   }
 ]
@@ -67,20 +90,20 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach((to, from, next)  =>{
-  if (to.path ===  '/login' && auth.currentUser) {
-    next('/')
-    return;
-  }
+// router.beforeEach((to, from, next)  =>{
+//   if (to.path ===  '/login' && auth.currentUser) {
+//     next('/')
+//     return;
+//   }
 
-  if (to.matched.some(record => record.meta.requiresAuth)  && !auth.
-  currentUser) {
-    next('/login')
-    return;
+//   if (to.matched.some(record => record.meta.requiresAuth)  && !auth.
+//   currentUser) {
+//     next('/login')
+//     return;
 
-  }
+//   }
 
-  next();
-})
+//   next();
+// })
 
-export default router
+export default router;
