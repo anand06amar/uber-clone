@@ -18,7 +18,7 @@ const routes = [
   // {
   //   path: '/about',
   //   name: 'about',
-    
+
   //   component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue'),
   //   meta: {
   //     requiresAuth: true
@@ -32,7 +32,7 @@ const routes = [
   },
   {
     path: '/uberX',
-    name: 'login',
+    name: 'uber',
     component: () => import('../components/uberX.vue')
 
   },
@@ -70,7 +70,7 @@ const routes = [
     path: '/Search',
     name: 'ride',
     component: Search,
-   
+
 
   },
   {

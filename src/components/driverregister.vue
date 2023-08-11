@@ -64,7 +64,7 @@
   // const store = useStore();
   onMounted(()=> {
     if (localStorage.getItem('user')) {
-      router.push('/');
+      router.push('/home');
     }
   });
   

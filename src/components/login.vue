@@ -1,86 +1,46 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <template>
-  <div class="login-1 bg-white flex items-center relative h-screen">
-    <div class="overlay absolute inset-0 z-0 bg-black opacity-75"></div>
-    <div class="container px-4 mx-auto relative z-10">
-      <div class="sm:w-10/12 md:w-8/12 lg:w-6/12 xl:w-5/12 mx-auto">
-        <div class="box bg-slate-800 p-6 md:px-12 md:pt-12 border-t-10 border-solid border-red-700">
-          <h2 class="text-3xl text-gray-200 text-center">Login</h2>
-
-          <form @submit.prevent="handleLogin" class="login-form mt-6 md:mt-12">
-            <div v-if="!showForgotPasswordSection" class="border-2 border-solid rounded flex items-center mb-4">
-              <div class="w-10 h-10 flex justify-center items-center flex-shrink-0">
-                <span class="far fa-envelope text-gray-200"></span>
-              </div>
-              <div class="flex-1">
-                <input type="text" v-model="email" placeholder="Enter your E-mail" pattern="[^\s@]+@[^\s@]+\.[^\s@]+"
-                  class="p-4 h-10 bg-slate-700 text-gray-200 py-1 pr-3 w-full" required />
-              </div>
-            </div>
-
-            <div v-if="!showForgotPasswordSection" class="border-2 border-solid rounded flex items-center mb-4">
-              <div class="w-10 h-10 flex justify-center items-center flex-shrink-0">
-                <span class="fas fa-asterisk text-gray-200"></span>
-              </div>
-              <div class="flex-1">
-                <input v-model="password" placeholder="Enter your Password" :type="showPassword ? 'text' : 'password'"
-                  class="p-4 h-10 bg-slate-700 text-gray-200 py-1 pr-3 w-full"
-                  pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$" required />
-              </div>
-              <button type="button" class="eye-button" @click="showPassword = !showPassword">
-                <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
-              </button>
-            </div>
-
-            <div v-if="showForgotPasswordSection" class="border-2 border-solid rounded flex items-center mb-4">
-              <div class="w-10 h-10 flex justify-center items-center flex-shrink-0">
-                <span class="fas fa-question-circle text-gray-200"></span>
-              </div>
-              <div class="flex-1">
-                <input v-model="forgotEmail" placeholder="Enter your E-mail"
-                  class="p-4 h-10 bg-slate-700 text-gray-200 py-1 pr-3 w-full" />
-              </div>
-            </div>
-
-            <p v-if="!showForgotPasswordSection" class="text-sm text-center text-gray-200 mt-6">
-              <a href="#" class="text-red-600 hover:underline" @click="toggleForgotPasswordSection">Forgot Password?</a>
-            </p>
-
-            <div v-if="showForgotPasswordSection" class="text-center mt-6">
-              <button type="button"
-                class="bg-red-700 hover:bg-red-800 text-gray-200 text-xl py-2 px-4 md:px-6 rounded transition-colors duration-300"
-                @click="handleForgotPassword">
-                Reset Password<span class="fas fa-key ml-2"></span>
-              </button>
-            </div>
-
-            <div class="text-center mt-6 md:mt-12">
-              <button type="submit" v-if="!showForgotPasswordSection"
-                class="bg-red-700 hover:bg-red-800 text-gray-200 text-xl py-2 px-4 md:px-6 rounded transition-colors duration-300">
-                Log In<span class="far fa-paper-plane ml-2"></span>
-              </button>
-            </div>
-
-            <!-- Sign in with Google button -->
-            <div class="text-center mt-6">
-              <button v-if="!showForgotPasswordSection"
-                class="bg-red-700 hover:bg-red-800 text-gray-200 text-xl py-2 px-4 md:px-6 rounded transition-colors duration-300"
-                @click="handleSigninWithGoogle">
-                Sign In with Google <span class="fab fa-google ml-2"></span>
-              </button>
-            </div>
-          </form>
-
-          <div class="border-t border-solid mt-6 md:mt-12 pt-4">
-            <p class="text-gray-500 text-center">
-              Don't have an account? <router-link to="/" class="text-red-600 hover:underline">Sign Up</router-link>
-            </p>
-          </div>
+  <div class="form-wrap">
+    <form class="login" @submit.prevent="handleSubmit">
+      <p class="login-register">
+        Don't have an account?
+        <router-link class="router-link" :to="{ name: 'register' }">Login</router-link>
+      </p>
+      <h2>Login To UBER</h2>
+      <div class="inputs">
+        <!-- <div class="input">
+          <input type="text" placeholder="First Name" v-model="firstName" />
+          <user class="icon" />
+        </div> -->
+        <!-- <div class="input">
+          <input type="text" placeholder="Last Name" v-model="lastName" />
+          <user class="icon" />
+        </div> -->
+        <div class="input">
+          <input type="text" placeholder="Username" v-model="username" />
+          <user class="icon" />
         </div>
+        <div class="input">
+          <input type="text" placeholder="Email" v-model="email" />
+          <email class="icon" />
+        </div>
+        <div class="input">
+          <input type="password" placeholder="Password" v-model="password" />
+          <password class="icon" />
+        </div>
+        <!-- <div class="input">
+          <input type="password" placeholder="confirmPassword" v-model="password" />
+          <password class="icon" />
+        </div> -->
+        <div v-show="error" class="error">{{ this.errorMsg }}</div>
       </div>
-    </div>
+      <button type="submit">Sign In</button>
+      <button @click.prevent="googleSignUp">Sign In with Google</button>
+      <div class="angle"></div>
+    </form>
+    <div class="background"></div>
   </div>
 </template>
+
 
 <script>
 import { ref, onMounted } from 'vue';
@@ -156,7 +116,7 @@ export default {
     const handleLogin = async () => {
       try {
         // Check if the user credentials exist in Firestore
-        const usersCollection = collection(db, 'Users');
+        const usersCollection = collection(db, 'rider');
         const q = query(usersCollection, where('email', '==', email.value));
         const querySnapshot = await getDocs(q);
 
@@ -260,25 +220,123 @@ export default {
 
 
 
-<style scoped>
-.login-1 {
-  z-index: 1000;
-}
+<style lang="scss">
+.form-wrap {
+  overflow: hidden;
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  align-self: center;
+  margin: 0 auto;
+  width: 90%;
 
-.box {
-  border-radius: 2rem;
-}
+  @media (min-width: 900px) {
+    width: 100%;
+  }
 
-.border-t-10 {
-  border-top-width: 10px;
-}
+  .login-register {
+    margin-bottom: 32px;
 
-.eye-button {
-  width: 40px;
-}
+    .router-link {
+      color: #000;
+    }
+  }
 
-.eye-button i {
-  font-size: 1rem;
-  color: #999;
+  form {
+    padding: 0 10px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+
+    @media (min-width: 900px) {
+      padding: 0 50px;
+    }
+
+    h2 {
+      text-align: center;
+      font-size: 32px;
+      color: #303030;
+      margin-bottom: 40px;
+
+      @media (min-width: 900px) {
+        font-size: 40px;
+      }
+    }
+
+    .inputs {
+      width: 100%;
+      max-width: 350px;
+
+      .input {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 8px;
+
+        input {
+          width: 100%;
+          border: none;
+          background-color: #f2f7f6;
+          padding: 4px 4px 4px 30px;
+          height: 50px;
+
+          &:focus {
+            outline: none;
+          }
+        }
+
+        .icon {
+          width: 12px;
+          position: absolute;
+          left: 6px;
+        }
+      }
+    }
+
+    .forgot-password {
+      text-decoration: none;
+      color: #000;
+      cursor: pointer;
+      font-size: 14px;
+      margin: 16px 0 32px;
+      border-bottom: 1px solid transparent;
+      transition: 0.5s ease all;
+
+      &:hover {
+        border-color: #303030;
+      }
+    }
+
+    .angle {
+      display: none;
+      position: absolute;
+      background-color: #fff;
+      transform: rotateZ(3deg);
+      width: 60px;
+      right: -30px;
+      height: 101%;
+
+      @media (min-width: 900px) {
+        display: initial;
+      }
+    }
+  }
+
+  .background {
+    display: none;
+    flex: 2;
+    background-size: cover;
+    background-image: url("../assets/background.png");
+    width: 100%;
+    height: 100%;
+
+    @media (min-width: 900px) {
+      display: initial;
+    }
+  }
 }
 </style>

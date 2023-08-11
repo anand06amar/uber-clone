@@ -1,87 +1,66 @@
 <template>
-  <div id="map" class="map-container"></div>
-  <div id="VehicleSelection" class="w-full">
-    <div class="w-full h-2 border-t"></div>
-    <div class="w-full text-center border-t-2 p-1.5 text-gray-700 text-lg font-semibold">
+  <div class="container">
+    <div id="map" class="map-container"></div>
+    <div id="VehicleSelection" class="w-full">
+      <div class="w-full h-2 border-t"></div>
+      <div class="w-full text-center border-t-2 p-1.5 text-gray-700 text-lg font-semibold">
+        <!-- Distance info -->
+      </div>
 
-    </div>
-    <div class="scrollSection">
-      <div class="bg-custom-gray">
-        <div class="flex items-center px-4 py-5">
-          <img width="75" src="img/uber/ride.png">
-          <div class="w-full ml-3">
-            <div class="flex items-center justify-between">
+      <div class="scrollSection">
+        <!-- Car section 1 -->
+        <div class="car-item" :class="{ 'active': selectedCar === 'UberX' }" @click="selectCar('UberX')">
+          <div class="car-details">
+            <img width="75" src="img/uber/ride.png" alt="UberX">
+            <div class="car-info">
               <div class="text-2xl mb-1">UberX</div>
-              <div class="text-xl">£200</div>
+              <div class="car-price">{{ Math.min(60 * distance, 10000) }}</div>
+              <div class="car-time">{{ 2.5 * distance }} mins</div>
             </div>
-            <div class="text-gray-500">7 hours</div>
           </div>
         </div>
-      </div>
-      <div>
-        <div class="flex items-center px-4 py-5">
-          <img width="75" src="img/uber/comfort.png">
-          <div class="w-full ml-3">
-            <div class="flex items-center justify-between">
+
+        <!-- Car section 2 -->
+        <div class="car-item" :class="{ 'active': selectedCar === 'Comfort' }" @click="selectCar('Comfort')">
+          <div class="car-details">
+            <img width="75" src="img/uber/comfort.png" alt="Comfort">
+            <div class="car-info">
               <div class="text-2xl mb-1">Comfort</div>
-              <div class="text-xl">£300</div>
+              <div class="car-price">{{ Math.min(50 * distance, 10000) }}</div>
+              <div class="car-time">{{ 2.5 * distance }} mins</div>
             </div>
-            <div class="text-gray-500">7 hours</div>
           </div>
         </div>
+
+        <!-- Repeat for other car sections -->
       </div>
-      <div>
-        <div class="flex items-center px-4 py-5">
-          <img width="75" src="https://i.ibb.co/Xx4G91m/uberblack.png">
-          <div class="w-full ml-3">
-            <div class="flex items-center justify-between">
-              <div class="text-2xl mb-1">Black</div>
-              <div class="text-xl">£300</div>
-            </div>
-            <div class="text-gray-500">7 hours</div>
-          </div>
-        </div>
-      </div>
-      <div>
-        <div class="flex items-center px-4 py-5">
-          <img width="75" src="https://i.ibb.co/1nStPWT/uberblacksuv.png">
-          <div class="w-full ml-3">
-            <div class="flex items-center justify-between">
-              <div class="text-2xl mb-1">Black Suv</div>
-              <div class="text-xl">£300</div>
-            </div>
-            <div class="text-gray-500">7 hours</div>
-          </div>
-        </div>
-      </div>
-      <div>
-        <div class="flex items-center px-4 py-5">
-          <img width="75" src="img/uber/uberxl.png">
-          <div class="w-full ml-3">
-            <div class="flex items-center justify-between">
-              <div class="text-2xl mb-1">UberXL</div>
-              <div class="text-xl">£800</div>
-            </div>
-            <div class="text-gray-500">7 hours</div>
-          </div>
+
+      <!-- Expanded car section -->
+      <div v-if="selectedCar" class="expanded-car">
+        <div class="car-details">
+          <!-- Car image, name, price, and time -->
         </div>
       </div>
     </div>
   </div>
 </template>
+
+
 <script>
-import mapboxgl from 'mapbox-gl';
-import MapboxDirections from '@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions';
+import mapboxgl from "mapbox-gl";
+import MapboxDirections from "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions";
+import { haversineDistance } from '../haversine.js'; // Replace with the actual path to your utility function
+
 
 export default {
   props: {
     pickuplocation: {
       type: String,
-      required: true
+      required: true,
     },
     dropofflocation: {
       type: String,
-      required: true
+      required: true,
     },
   },
   data() {
@@ -90,41 +69,55 @@ export default {
       pickupCoordinate: null,
       destinationCoordinate: null,
       isPickupSelected: true,
+      directionsControl: null,
+      distance: null,
+      selectedCar: null,
     };
   },
-
   mounted() {
-    mapboxgl.accessToken = 'pk.eyJ1IjoiYW5hbmRhbWFyMDYiLCJhIjoiY2xpdTE5cjBzMDN3bzNzb2Nqejc0ZXkwaiJ9.qNHSWQc3SNVPt7QsGrmdaw';
+    mapboxgl.accessToken =
+      "pk.eyJ1IjoiYW5hbmRhbWFyMDYiLCJhIjoiY2xpdTE5cjBzMDN3bzNzb2Nqejc0ZXkwaiJ9.qNHSWQc3SNVPt7QsGrmdaw";
 
-    // Initialize the map
     this.map = new mapboxgl.Map({
-      container: 'map',
-      style: 'mapbox://styles/mapbox/streets-v11',
+      container: "map",
+      style: "mapbox://styles/mapbox/streets-v11",
       center: [-96, 37.8],
       zoom: 6,
     });
 
-    this.map.on('load', () => {
-      // Map has loaded, you can now add markers and directions control
+    this.map.on("load", () => {
       this.addMapboxDirections();
       this.searchLocation();
     });
   },
   methods: {
     searchLocation() {
+
       if (this.$props.pickuplocation && this.$props.dropofflocation) {
-        const pickupUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(this.$props.pickuplocation)}.json?access_token=${mapboxgl.accessToken}&limit=1`;
-        const destinationUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(this.$props.dropofflocation)}.json?access_token=${mapboxgl.accessToken}&limit=1`;
+        const pickupUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+          this.$props.pickuplocation
+        )}.json?access_token=${mapboxgl.accessToken}&limit=1`;
+        const destinationUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+          this.$props.dropofflocation
+        )}.json?access_token=${mapboxgl.accessToken}&limit=1`;
 
         Promise.all([fetch(pickupUrl), fetch(destinationUrl)])
-          .then(responses => Promise.all(responses.map(response => response.json())))
-          .then(data => {
+          .then((responses) =>
+            Promise.all(responses.map((response) => response.json()))
+          )
+          .then((data) => {
             const pickupData = data[0];
             const destinationData = data[1];
 
-            if (pickupData.features && pickupData.features.length > 0 && destinationData.features && destinationData.features.length > 0) {
+            if (
+              pickupData.features &&
+              pickupData.features.length > 0 &&
+              destinationData.features &&
+              destinationData.features.length > 0
+            ) {
               const pickupCoordinates = pickupData.features[0].center;
-              const destinationCoordinates = destinationData.features[0].center;
+              const destinationCoordinates =
+                destinationData.features[0].center;
 
               this.setPickupCoordinate(pickupCoordinates);
               this.setDestinationCoordinate(destinationCoordinates);
@@ -136,14 +129,16 @@ export default {
 
               this.addToMap(pickupCoordinates, destinationCoordinates);
             } else {
-              console.log('No results found for the search locations.');
+              console.log("No results found for the search locations.");
             }
           })
-          .catch(error => {
-            console.log('Error occurred while geocoding:', error);
+          .catch((error) => {
+            console.log("Error occurred while geocoding:", error);
           });
       } else {
-        console.log('Please enter both pickup and destination locations to search.');
+        console.log(
+          "Please enter both pickup and destination locations to search."
+        );
       }
     },
     setPickupCoordinate(coordinates) {
@@ -155,122 +150,193 @@ export default {
       this.isPickupSelected = true;
     },
     addToMap(pickupCoord, destinationCoord) {
-      // Remove existing markers if they exist
-      if (this.map.getLayer('pickupMarker')) {
-        this.map.removeLayer('pickupMarker');
-        this.map.removeSource('pickupMarker');
+      if (this.map.getLayer("pickupMarker")) {
+        this.map.removeLayer("pickupMarker");
+        this.map.removeSource("pickupMarker");
       }
 
-      if (this.map.getLayer('destinationMarker')) {
-        this.map.removeLayer('destinationMarker');
-        this.map.removeSource('destinationMarker');
+      if (this.map.getLayer("destinationMarker")) {
+        this.map.removeLayer("destinationMarker");
+        this.map.removeSource("destinationMarker");
       }
 
       // Create a Marker for pickup and add it to the map
-      this.map.addSource('pickupMarker', {
-        type: 'geojson',
+      this.map.addSource("pickupMarker", {
+        type: "geojson",
         data: {
-          type: 'Feature',
+          type: "Feature",
           geometry: {
-            type: 'Point',
+            type: "Point",
             coordinates: pickupCoord,
           },
         },
       });
 
       this.map.addLayer({
-        id: 'pickupMarker',
-        source: 'pickupMarker',
-        type: 'symbol',
+        id: "pickupMarker",
+        source: "pickupMarker",
+        type: "symbol",
         layout: {
-          'icon-image': 'marker-15',
-          'icon-size': 1.5,
+          "icon-image": "marker-15",
+          "icon-size": 1.5,
         },
       });
 
       // Create a Marker for destination and add it to the map
-      this.map.addSource('destinationMarker', {
-        type: 'geojson',
+      this.map.addSource("destinationMarker", {
+        type: "geojson",
         data: {
-          type: 'Feature',
+          type: "Feature",
           geometry: {
-            type: 'Point',
+            type: "Point",
             coordinates: destinationCoord,
           },
         },
       });
 
       this.map.addLayer({
-        id: 'destinationMarker',
-        source: 'destinationMarker',
-        type: 'symbol',
+        id: "destinationMarker",
+        source: "destinationMarker",
+        type: "symbol",
         layout: {
-          'icon-image': 'marker-15',
-          'icon-size': 1.5,
+          "icon-image": "marker-15",
+          "icon-size": 1.5,
         },
       });
 
-      console.log('Pickup Coordinate:', pickupCoord);
-      console.log('Destination Coordinate:', destinationCoord);
+      this.showRouteDirections();
     },
     addMapboxDirections() {
-      const directions = new MapboxDirections({
+      this.directionsControl = new MapboxDirections({
         accessToken: mapboxgl.accessToken,
-        unit: 'metric',
-        profile: 'mapbox/driving',
+        unit: "metric",
         controls: {
           inputs: false,
           instructions: false,
           profileSwitcher: false,
         },
-        styles: [
-          // Set the route line style
-          {
-            id: 'directions-route-line',
-            type: 'line',
-            paint: {
-              'line-width': 4,
-              'line-color': '#007cbf',
-            },
-          },
-          // Set the route origin marker style
-          {
-            id: 'directions-origin-point',
-            type: 'circle',
-            paint: {
-              'circle-radius': 8,
-              'circle-color': '#007cbf',
-            },
-          },
-          // Set the route destination marker style
-          {
-            id: 'directions-destination-point',
-            type: 'circle',
-            paint: {
-              'circle-radius': 8,
-              'circle-color': '#007cbf',
-            },
-          },
-          // Set the route waypoint marker style
-          {
-            id: 'directions-waypoint-point',
-            type: 'circle',
-            paint: {
-              'circle-radius': 6,
-              'circle-color': '#007cbf',
-            },
-          },
-        ],
       });
 
-      this.map.addControl(directions, 'top-left');
-    }
-  }
+      this.map.addControl(this.directionsControl, "top-left");
+    },
+    showRouteDirections() {
+      console.log("showRouteDirections() called");
+
+      if (this.pickupCoordinate && this.destinationCoordinate) {
+        const haversineOptions = {
+          unit: 'km', // You can adjust the unit as needed
+        };
+
+        const distance = haversineDistance(
+          this.pickupCoordinate,
+          this.destinationCoordinate,
+          haversineOptions
+        );
+
+        this.distance = distance.toFixed(2); // Round to 2 decimal places
+        this.directionsControl.setOrigin(this.pickupCoordinate);
+        this.directionsControl.setDestination(this.destinationCoordinate);
+      } else {
+        console.log("Coordinates not available.");
+      }
+    },
+    selectCar(carType) {
+      this.selectedCar = this.selectedCar === carType ? null : carType;
+    },
+
+
+  },
 };
 </script>
 
 <style scoped>
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+}
+
 .map-container {
-  height: 400px;
+  height: 600px;
+  width: 80%;
+  margin: auto;
+  border: 1px solid #ccc;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background-color: #000;
+  color: #fff;
+  padding: 16px;
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  z-index: 1;
+}
+
+.distance-info {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.car-item {
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.car-item.active {
+  background-color: #f3f3f3;
+}
+
+/* Styles for expanded car section */
+.expanded-car {
+  border-top: 2px solid #ddd;
+  padding: 1rem;
+  background-color: #f3f3f3;
+}
+
+.expanded-car .car-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #ccc;
+}
+
+.expanded-car .car-image {
+  max-width: 75px;
+  margin-right: 1rem;
+}
+
+.expanded-car .car-info {
+  flex: 1;
+}
+
+.expanded-car .car-price {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.mapboxgl-directions-route-path {
+  stroke: #000;
+  /* Set the stroke color to black */
+  stroke-width: 4px;
+  /* Set the stroke width as needed */
+  fill: none;
+}
+
+.expanded-car .car-time {
+  font-size: 1rem;
+  color: #777;
 }
 </style>
