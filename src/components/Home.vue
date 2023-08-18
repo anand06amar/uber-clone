@@ -40,19 +40,14 @@
   </div>
 </template>
 
-<script>
-export default {
-  methods: {
-    logout() {
-      // Clear user data from localStorage
-      localStorage.removeItem('user');
-      // You can also clear other relevant data if needed
-      // For example: localStorage.removeItem('token');
+<script setup>
+import { useRouter } from 'vue-router';
 
-      // Redirect to login page or perform other actions
-      this.$router.push('/login');
-    }
-  }
+const router = useRouter();
+
+const logout = () => {
+  localStorage.removeItem('user'); // Remove the user session
+  router.push('/login'); // Navigate to the login page
 };
 </script>
 <style>

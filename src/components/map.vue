@@ -1,14 +1,23 @@
 <template>
   <div class="container">
-    <div id="map" class="map-container"></div>
+    <div class="fixed-navbar">
+      <div class="back-button" @click="goBack">
+        <img src="https://flaticons.net/icon.php?slug_category=mobile-application&slug_icon=left-arrow" alt="Back" />
+      </div>
+      <div class="uber-text">Uber</div>
+      <div class="spacer"></div>
+
+    </div>
+    <div v-if="isLoading" class="loading-overlay">
+      <div class="loading-spinner"></div>
+    </div>
+    <div id="map" class="map-container "></div>
     <div id="VehicleSelection" class="w-full">
       <div class="w-full h-2 border-t"></div>
       <div class="w-full text-center border-t-2 p-1.5 text-gray-700 text-lg font-semibold">
-        <!-- Distance info -->
       </div>
-
+      <div class="choose-ride-text">Choose Your Ride</div>
       <div class="scrollSection">
-        <!-- Car section 1 -->
         <div class="car-item" :class="{ 'active': selectedCar === 'UberX' }" @click="selectCar('UberX')">
           <div class="car-details">
             <img width="75" src="img/uber/ride.png" alt="UberX">
@@ -19,6 +28,7 @@
             </div>
           </div>
         </div>
+
 
         <!-- Car section 2 -->
         <div class="car-item" :class="{ 'active': selectedCar === 'Comfort' }" @click="selectCar('Comfort')">
@@ -41,6 +51,10 @@
           <!-- Car image, name, price, and time -->
         </div>
       </div>
+
+    </div>
+    <div class="fixed-confirm-button">
+      <button @click="confirmRideRequest">Confirm</button>
     </div>
   </div>
 </template>
@@ -50,7 +64,8 @@
 import mapboxgl from "mapbox-gl";
 import MapboxDirections from "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions";
 import { haversineDistance } from '../haversine.js'; // Replace with the actual path to your utility function
-
+import { db } from "../firebase.js";
+import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
 
 export default {
   props: {
@@ -72,9 +87,14 @@ export default {
       directionsControl: null,
       distance: null,
       selectedCar: null,
+      isLoading: true,
+      requests: false,
     };
   },
   mounted() {
+    setTimeout(() => {
+      this.isLoading = false; // Turn off loading state after 3 seconds
+    }, 3000);
     mapboxgl.accessToken =
       "pk.eyJ1IjoiYW5hbmRhbWFyMDYiLCJhIjoiY2xpdTE5cjBzMDN3bzNzb2Nqejc0ZXkwaiJ9.qNHSWQc3SNVPt7QsGrmdaw";
 
@@ -89,8 +109,64 @@ export default {
       this.addMapboxDirections();
       this.searchLocation();
     });
+
+    this.getRideRequest();
   },
   methods: {
+
+    async getRideRequest() {
+      const querySnapshot = await getDocs(query(collection(db, 'Requests'), where('email', '==', JSON.parse(localStorage.getItem("user")).email)));
+
+      if (querySnapshot.empty) {
+        console.log("No Requests!")
+      }
+      else {
+        querySnapshot.docs.forEach((doc) => { // Access the 'docs' property to iterate over document snapshots
+          // doc.data() is a method that retrieves the data of the document
+          const documentData = {
+            status: doc.data().Status,
+          }
+          // username.value = documentData.username;
+          console.log('Document ID:', doc.id, 'Data:', documentData.status);
+
+          if (documentData.status === "rejected") {
+            console.log("Unfortunately, your request has been rejected");
+          }
+        });
+      }
+    },
+
+
+    async confirmRideRequest() {
+      // if (JSON.parse(localStorage.getItem("user"))?.role === "Driver") {
+
+      // }
+      try {
+        const newRequest = {
+          userName: JSON.parse(localStorage.getItem("user")).displayName,
+          email: JSON.parse(localStorage.getItem("user")).email,
+          pickup: this.pickuplocation,
+          dropoff: this.dropofflocation,
+          date: (new Date().getDate()).toString(),
+          time: (new Date().getMilliseconds()).toString(),
+          Status: "pending"
+          // password: password.value,
+        };
+
+        const docRef = await addDoc(collection(db, 'Requests'), newRequest);
+        localStorage.setItem('request', JSON.stringify(newRequest))
+        console.log("Request created with id: ", docRef.id)
+
+      } catch (error) {
+        console.error('Error storing user data:', error);
+      }
+    },
+
+    goBack() {
+      // You can use Vue Router to navigate back to the Search.vue page
+      this.$router.push('/Search'); // Adjust the route path as needed
+    },
+
     searchLocation() {
 
       if (this.$props.pickuplocation && this.$props.dropofflocation) {
@@ -254,16 +330,24 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 100vh;
+  height: 120vh;
   overflow: hidden;
 }
 
 .map-container {
   height: 600px;
+  /* Change this to your desired fixed height */
   width: 80%;
   margin: auto;
   border: 1px solid #ccc;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.choose-ride-text {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 1rem 0;
+  color: #333;
 }
 
 .header {
@@ -292,6 +376,46 @@ export default {
   align-items: center;
   cursor: pointer;
   transition: background-color 0.3s ease;
+}
+
+.fixed-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #000;
+  color: #fff;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 2;
+}
+
+.back-button {
+  cursor: pointer;
+}
+
+.back-button img {
+  width: 24px;
+  height: 24px;
+}
+
+.uber-text {
+  margin-left: 16px;
+  /* Adjust the margin as needed */
+  font-size: 20px;
+  /* Adjust the font size as needed */
+  font-weight: bold;
+}
+
+.logo img {
+  width: 80px;
+  /* Adjust the width as needed */
+}
+
+.spacer {
+  flex: 1;
 }
 
 .car-item.active {
@@ -338,5 +462,82 @@ export default {
 .expanded-car .car-time {
   font-size: 1rem;
   color: #777;
+}
+
+.fixed-confirm-button {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.confirm-button {
+  padding: 12px 52px;
+  background-color: #000000;
+  color: white;
+  font-size: 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+}
+
+.confirm-button:hover {
+  background-color: #333333;
+  /* Change the color on hover */
+}
+
+.confirm-button:active {
+  transform: scale(0.95);
+  /* Shrink the button on click */
+  box-shadow: none;
+  /* Remove box shadow on click */
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  transition: opacity 0.3s;
+}
+
+.loading-overlay.active {
+  opacity: 1;
+}
+
+.loading-overlay.inactive {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.loading-spinner {
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid #fff;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>

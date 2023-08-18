@@ -32,7 +32,9 @@
           </ul>
         </div>
       </div>
-      <img class="h-10 w-10 bg-gray-200 rounded-full ml-3" src="https://img.icons8.com/ios/50/000000/plus-math.png" />
+      <div class="h-10 w-10 bg-gray-200 rounded-full ml-3 cursor-pointer" @click="saveLocation()">
+        <img class="h-6 w-6 mx-auto" src="https://img.icons8.com/ios/50/000000/plus-math.png" />
+      </div>
     </div>
     <div class="bg-white flex text-l items-center px-4 py-2">
       <img class="rounded-full bg-gray-400 p-2 mr-2 h-10 w-10"
@@ -51,7 +53,13 @@
   </div>
 </template>
 
+
 <script>
+
+import { collection, addDoc } from 'firebase/firestore';
+import { db, auth } from '../firebase.js'; // Import 'auth' from firebase.js
+import Swal from 'sweetalert2';
+
 export default {
   data() {
     return {
@@ -65,6 +73,36 @@ export default {
     };
   },
   methods: {
+    async saveLocation() {
+      try {
+        const user = auth.currentUser;
+        if (!user) {
+          console.error('User not authenticated.');
+          return;
+        }
+
+        const locationsCollection = collection(db, 'Rider', user.uid, 'Locations');
+
+        await addDoc(locationsCollection, {
+          pickup: this.pickuplocation,
+          dropoff: this.dropofflocation,
+        });
+
+        Swal.fire({
+          title: 'Location Saved',
+          text: 'The location has been saved successfully.',
+          icon: 'success',
+        });
+      } catch (error) {
+        console.error('Error saving location:', error);
+        Swal.fire({
+          title: 'Error',
+          text: 'An error occurred while saving the location. Please try again.',
+          icon: 'error',
+        });
+      }
+    },
+
     async fetchSuggestions(query, suggestionsArray) {
       try {
         const response = await fetch(

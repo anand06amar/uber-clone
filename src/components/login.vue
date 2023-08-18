@@ -1,11 +1,17 @@
 <template>
+  <nav class="navbar">
+    <div class="logo">
+      <span class="logo-text">Uber</span>
+    </div>
+    <!-- Add any navigation links or items here -->
+  </nav>
   <div class="form-wrap">
-    <form class="login" @submit.prevent="handleSubmit">
-      <p class="login-register">
+    <form class="register" @submit.prevent="handleLogin">
+      <p class="login-register bold-text">
         Don't have an account?
         <router-link class="router-link" :to="{ name: 'register' }">Login</router-link>
       </p>
-      <h2>Login To UBER</h2>
+      <h2 class="bold-text">LogIn Your UBER Account</h2>
       <div class="inputs">
         <!-- <div class="input">
           <input type="text" placeholder="First Name" v-model="firstName" />
@@ -15,10 +21,10 @@
           <input type="text" placeholder="Last Name" v-model="lastName" />
           <user class="icon" />
         </div> -->
-        <div class="input">
+        <!-- <div class="input">
           <input type="text" placeholder="Username" v-model="username" />
           <user class="icon" />
-        </div>
+        </div> -->
         <div class="input">
           <input type="text" placeholder="Email" v-model="email" />
           <email class="icon" />
@@ -31,10 +37,10 @@
           <input type="password" placeholder="confirmPassword" v-model="password" />
           <password class="icon" />
         </div> -->
-        <div v-show="error" class="error">{{ this.errorMsg }}</div>
+        <!-- <div v-show="error" class="error">{{ this.errorMsg }}</div> -->
       </div>
-      <button type="submit">Sign In</button>
-      <button @click.prevent="googleSignUp">Sign In with Google</button>
+      <button type="submit" class="signup-button">Sign Up</button>
+      <button @click.prevent="handleSigninWithGoogle" class="google-button">Sign Up with Google</button>
       <div class="angle"></div>
     </form>
     <div class="background"></div>
@@ -42,12 +48,14 @@
 </template>
 
 
+
+
 <script>
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { collection, query, where, getDocs, setDoc, getDoc, doc, getFirestore } from 'firebase/firestore';
-import { db, app } from '../firebase.js'; // Assuming you have already set up Firebase in your project
-import { GoogleAuthProvider, signInWithPopup, getAuth, sendPasswordResetEmail } from 'firebase/auth';
+import { db, app } from '../firebase.js'; // Import messaging from firebase.js
+import { GoogleAuthProvider, signInWithPopup, getAuth } from 'firebase/auth';
 import Swal from 'sweetalert2';
 // import { useStore } from '@/store';
 
@@ -66,44 +74,44 @@ export default {
     const forgotEmail = ref('');
     const auth = getAuth(app)
 
-    const toggleForgotPasswordSection = () => {
-      showForgotPasswordSection.value = !showForgotPasswordSection.value;
-    };
-    const handleForgotPassword = async () => {
-      try {
-        const auth = getAuth(app);
-        const email = forgotEmail.value;
+    // const toggleForgotPasswordSection = () => {
+    //   showForgotPasswordSection.value = !showForgotPasswordSection.value;
+    // };
+    // const handleForgotPassword = async () => {
+    //   try {
+    // const auth = getAuth(app);
+    // const email = forgotEmail.value;
 
-        // Send the password reset email
-        await sendPasswordResetEmail(auth, email);
+    // Send the password reset email
+    // await sendPasswordResetEmail(auth, email);
 
-        // Password reset email sent successfully
-        const resetLink = 'https://mail.google.com'; // Replace with your actual password reset link
+    // Password reset email sent successfully
+    // const resetLink = 'https://mail.google.com'; // Replace with your actual password reset link
 
-        // Display SweetAlert with a clickable link
-        Swal.fire({
-          title: 'Password Reset Email Sent',
-          html: `Password reset email sent. Please check your inbox. Click <a href="${resetLink}" target="_blank" style="color: blue; text-decoration: underline;">here</a> to reset your password.`,
-          icon: 'success',
-        });
+    // Display SweetAlert with a clickable link
+    // Swal.fire({
+    //   title: 'Password Reset Email Sent',
+    //   html: `Password reset email sent. Please check your inbox. Click <a href="${resetLink}" target="_blank" style="color: blue; text-decoration: underline;">here</a> to reset your password.`,
+    //   icon: 'success',
+    // });
 
-        // Clear the input field
-        forgotEmail.value = '';
+    // Clear the input field
+    // forgotEmail.value = '';
 
-        // Hide the forgot password section
-        showForgotPasswordSection.value = false;
-      } catch (error) {
-        console.error('Error sending password reset email:', error);
-        // alert('Failed to send password reset email. Please try again.');
-        Swal.fire({
-          title: 'Failed to send password reset email.',
-          html: 'Please crosscheck the email',
-          icon: 'error',
-        })
+    // Hide the forgot password section
+    //   showForgotPasswordSection.value = false;
+    // } catch (error) {
+    //   console.error('Error sending password reset email:', error);
+    // alert('Failed to send password reset email. Please try again.');
+    //     Swal.fire({
+    //       title: 'Failed to send password reset email.',
+    //       html: 'Please crosscheck the email',
+    //       icon: 'error',
+    //     })
 
-        forgotEmail.value = '';
-      }
-    };
+    //     forgotEmail.value = '';
+    //   }
+    // };
 
 
     // On component mount, check if the username is stored in local storage
@@ -116,7 +124,7 @@ export default {
     const handleLogin = async () => {
       try {
         // Check if the user credentials exist in Firestore
-        const usersCollection = collection(db, 'rider');
+        const usersCollection = collection(db, 'Rider');
         const q = query(usersCollection, where('email', '==', email.value));
         const querySnapshot = await getDocs(q);
 
@@ -155,7 +163,10 @@ export default {
           // Store the username in local storage
           localStorage.setItem('user', JSON.stringify(foundUser));
           // localStorage.setItem('access_token', access_token);
-
+          // Get FCM token and store in Firestore
+          // const userDocRef = doc(usersCollection, foundUser.uid);
+          // const token = await messaging.getToken();
+          // await setDoc(userDocRef, { fcmToken: token }, { merge: true });
           router.push('/home');
         }
       } catch (error) {
@@ -176,10 +187,11 @@ export default {
         localStorage.setItem("user", JSON.stringify(user));
         localStorage.setItem("userImage", JSON.parse(localStorage.getItem("user")).photoURL);
         // Redirect or perform other actions
+
         router.push("/home");
 
         const firestore = getFirestore();
-        const usersCollectionRef = collection(firestore, "Users");
+        const usersCollectionRef = collection(firestore, "Rider");
         const userDocRef = doc(usersCollectionRef, user.uid);
 
         const userDocSnap = await getDoc(userDocRef);
@@ -210,8 +222,8 @@ export default {
       handleSigninWithGoogle,
       showForgotPasswordSection,
       forgotEmail,
-      toggleForgotPasswordSection,
-      handleForgotPassword,
+      // toggleForgotPasswordSection,
+      // handleForgotPassword,
     };
   },
 };
@@ -220,7 +232,9 @@ export default {
 
 
 
-<style lang="scss">
+
+
+<style lang="scss" scoped>
 .form-wrap {
   overflow: hidden;
   display: flex;
@@ -330,7 +344,7 @@ export default {
     display: none;
     flex: 2;
     background-size: cover;
-    background-image: url("../assets/background.png");
+    background-image: url("../assets/backgrnd.jpg");
     width: 100%;
     height: 100%;
 
@@ -338,5 +352,61 @@ export default {
       display: initial;
     }
   }
+}
+
+.register {
+  h2 {
+    max-width: 350px;
+  }
+}
+
+.signup-button,
+.google-button {
+  display: block;
+  width: 280px;
+  padding: 12px;
+  margin-top: 16px;
+  background-color: #000;
+  color: white;
+  font-size: 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.signup-button:hover,
+.google-button:hover {
+  background-color: #333;
+}
+
+.signup-button:active,
+.google-button:active {
+  transform: scale(0.95);
+  box-shadow: none;
+}
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background-color: #000;
+  color: white;
+  z-index: 1000;
+  /* Ensure the navbar is above other content */
+}
+
+.logo-text {
+  font-size: 1.5rem;
+  font-weight: bold;
 }
 </style>

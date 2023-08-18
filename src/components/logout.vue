@@ -1,0 +1,1 @@
+<button @click="$store.dispatch('logout')">Logout</button>

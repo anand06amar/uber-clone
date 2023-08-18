@@ -1,11 +1,17 @@
 <template>
+  <nav class="navbar">
+    <div class="logo">
+      <span class="logo-text">Uber</span>
+    </div>
+    <!-- Add any navigation links or items here -->
+  </nav>
   <div class="form-wrap">
     <form class="register" @submit.prevent="handleSubmit">
       <p class="login-register">
         Already have an account?
         <router-link class="router-link" :to="{ name: 'login' }">Login</router-link>
       </p>
-      <h2>Create Your UBER Account</h2>
+      <h2 class="bold text">Create Your UBER Account</h2>
       <div class="inputs">
         <div class="input">
           <input type="text" placeholder="First Name" v-model="firstName" />
@@ -33,8 +39,8 @@
         </div> -->
         <div v-show="error" class="error">{{ this.errorMsg }}</div>
       </div>
-      <button type="submit">Sign Up</button>
-      <button @click.prevent="googleSignUp">Sign Up with Google</button>
+      <button type="submit" class="signup-button">Sign Up</button>
+      <button @click.prevent="googleSignUp" class="google-button">Sign Up with Google</button>
       <div class="angle"></div>
     </form>
     <div class="background"></div>
@@ -62,9 +68,9 @@ const router = useRouter();
 const isUserAlreadyRegistered = ref(false);
 const auth = getAuth(app)
 // const store = useStore();
-onMounted(()=> {
+onMounted(() => {
   if (localStorage.getItem('user')) {
-    router.push('/');
+    router.push('/home');
   }
 });
 
@@ -96,7 +102,7 @@ const handleSubmit = async () => {
     } catch (error) {
       console.error('Error storing user data:', error);
     }
-  } 
+  }
   // else if (password.value !== confirmPassword.value) {
   // //   swal.fire({
   //     title: "Confirm Password",
@@ -121,7 +127,7 @@ const googleSignUp = async () => {
     const user = result.user;
     localStorage.setItem("Rider", JSON.stringify(user));
     localStorage.setItem("userImage", JSON.parse(localStorage.getItem("Rider")).photoURL);
-   
+
     router.push("/home");
 
     const firestore = getFirestore();
@@ -154,7 +160,6 @@ const googleSignUp = async () => {
 </script>
 
 <style lang="scss" scoped>
-
 .form-wrap {
   overflow: hidden;
   display: flex;
@@ -163,6 +168,7 @@ const googleSignUp = async () => {
   align-self: center;
   margin: 0 auto;
   width: 90%;
+
   @media (min-width: 900px) {
     width: 100%;
   }
@@ -183,6 +189,7 @@ const googleSignUp = async () => {
     justify-content: center;
     align-items: center;
     flex: 1;
+
     @media (min-width: 900px) {
       padding: 0 50px;
     }
@@ -192,6 +199,7 @@ const googleSignUp = async () => {
       font-size: 32px;
       color: #303030;
       margin-bottom: 40px;
+
       @media (min-width: 900px) {
         font-size: 40px;
       }
@@ -207,6 +215,7 @@ const googleSignUp = async () => {
         justify-content: center;
         align-items: center;
         margin-bottom: 8px;
+
         input {
           width: 100%;
           border: none;
@@ -249,6 +258,7 @@ const googleSignUp = async () => {
       width: 60px;
       right: -30px;
       height: 101%;
+
       @media (min-width: 900px) {
         display: initial;
       }
@@ -259,17 +269,64 @@ const googleSignUp = async () => {
     display: none;
     flex: 2;
     background-size: cover;
-    background-image: url("../assets/background.png");
+    background-image: url("../assets/backgrnd.jpg");
     width: 100%;
     height: 100%;
+
     @media (min-width: 900px) {
       display: initial;
     }
   }
 }
+
 .register {
   h2 {
     max-width: 350px;
   }
+}
+
+.signup-button,
+.google-button {
+  display: block;
+  width: 280px;
+  padding: 12px;
+  margin-top: 16px;
+  background-color: #000;
+  color: white;
+  font-size: 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.signup-button:hover,
+.google-button:hover {
+  background-color: #333;
+}
+
+.signup-button:active,
+.google-button:active {
+  transform: scale(0.95);
+  box-shadow: none;
+}
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background-color: #000;
+  color: white;
+  z-index: 1000;
+  /* Ensure the navbar is above other content */
 }
 </style>

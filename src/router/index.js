@@ -11,10 +11,11 @@ const routes = [
     path: '/',
     name: 'Home',
     component: HomeView,
-    meta: {
-      requiresAuth: true
-    }
+    // meta: {
+    //   requiresAuth: true
+    // }
   },
+
   // {
   //   path: '/about',
   //   name: 'about',
@@ -31,6 +32,12 @@ const routes = [
 
   },
   {
+    path: '/driverhome',
+    name: 'driver_home',
+    component: () => import('../components/driverhome.vue')
+
+  },
+  {
     path: '/uberX',
     name: 'uber',
     component: () => import('../components/uberX.vue')
@@ -43,9 +50,18 @@ const routes = [
 
   },
   {
+    path: '/login2',
+    name: 'login2',
+    component: () => import('../components/driver_login.vue')
+
+  },
+  {
     path: '/home',
     name: 'home',
-    component: () => import('../components/Home.vue')
+    component: () => import('../components/Home.vue'),
+    meta: {
+      requiresAuth: true
+    }
 
   },
   {
@@ -89,6 +105,20 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
 })
+
+
+router.beforeEach((to, from, next) => {
+  const user = JSON.parse(localStorage.getItem('user'));
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+
+  if (requiresAuth && !user) {
+    next('/login'); // Redirect to the login page if not authenticated
+  } else {
+    next();
+  }
+});
+
+
 
 // router.beforeEach((to, from, next)  =>{
 //   if (to.path ===  '/login' && auth.currentUser) {
