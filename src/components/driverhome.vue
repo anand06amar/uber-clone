@@ -35,8 +35,9 @@
 import { ref, onMounted } from 'vue';
 import { collection, getDocs, updateDoc, doc } from 'firebase/firestore';
 import { db } from '../firebase.js';
-
+import { useRouter } from 'vue-router';
 const rideRequests = ref([]);
+const router = useRouter();
 
 const acceptRide = async (index) => {
     const acceptedRequest = rideRequests.value[index];
@@ -46,10 +47,20 @@ const acceptRide = async (index) => {
         await updateDoc(documentRef, { Status: 'approved' });
         console.log('Ride request approved:', acceptedRequest);
         rideRequests.value.splice(index, 1);
+
+        // Pass only the pickup information as the query parameter
+        router.push({
+            name: 'ride-map',
+            query: {
+                pickuplocation: acceptedRequest.pickup, // Only pass the pickup location
+            }
+        });
     } catch (error) {
         console.error('Error updating document:', error);
     }
 };
+
+
 
 const rejectRide = async (index) => {
     const rejectedRequest = rideRequests.value[index];
@@ -59,10 +70,15 @@ const rejectRide = async (index) => {
         await updateDoc(documentRef, { Status: 'rejected' });
         console.log('Ride request rejected:', rejectedRequest);
         rideRequests.value.splice(index, 1);
+
+        // Notify the rider by updating the status on the rider's side
+        await updateDoc(doc(db, 'Requests', rejectedRequest.id), { Status: 'rejected' });
+
     } catch (error) {
         console.error('Error updating document:', error);
     }
 };
+
 
 // Fetch ride requests from Firestore
 onMounted(async () => {
@@ -72,7 +88,7 @@ onMounted(async () => {
         rideRequests.value = querySnapshot.docs.map((doc) => ({
             id: doc.id,
             ...doc.data()
-        }));
+        })).filter(request => request.Status === 'pending'); // Filter out rejected or approved requests
     } else {
         console.log('No ride requests');
     }

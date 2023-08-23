@@ -83,6 +83,18 @@ const routes = [
 
   },
   {
+    path: '/ride-map',
+    name: 'ride-map',
+    component: () => import('../components/RideMap.vue')
+
+  },
+  {
+    path: '/rider-page',
+    name: 'rider-page',
+    component: () => import('../components/rider.vue')
+
+  },
+  {
     path: '/Search',
     name: 'ride',
     component: Search,

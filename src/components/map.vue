@@ -8,6 +8,7 @@
       <div class="spacer"></div>
 
     </div>
+
     <div v-if="isLoading" class="loading-overlay">
       <div class="loading-spinner"></div>
     </div>
@@ -15,6 +16,9 @@
     <div id="VehicleSelection" class="w-full">
       <div class="w-full h-2 border-t"></div>
       <div class="w-full text-center border-t-2 p-1.5 text-gray-700 text-lg font-semibold">
+      </div>
+      <div v-if="notification" class="notification">
+        {{ notification }}
       </div>
       <div class="choose-ride-text">Choose Your Ride</div>
       <div class="scrollSection">
@@ -60,13 +64,24 @@
 </template>
 
 
+
+
+
+
 <script>
 import mapboxgl from "mapbox-gl";
 import MapboxDirections from "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions";
 import { haversineDistance } from '../haversine.js'; // Replace with the actual path to your utility function
 import { db } from "../firebase.js";
-import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
-
+import {
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  where,
+} from 'firebase/firestore';
+import { useRouter } from 'vue-router';
+useRouter();
 export default {
   props: {
     pickuplocation: {
@@ -89,6 +104,8 @@ export default {
       selectedCar: null,
       isLoading: true,
       requests: false,
+      notification: null,
+
     };
   },
   mounted() {
@@ -102,7 +119,7 @@ export default {
       container: "map",
       style: "mapbox://styles/mapbox/streets-v11",
       center: [-96, 37.8],
-      zoom: 6,
+      zoom: 2,
     });
 
     this.map.on("load", () => {
@@ -130,7 +147,9 @@ export default {
           console.log('Document ID:', doc.id, 'Data:', documentData.status);
 
           if (documentData.status === "rejected") {
-            console.log("Unfortunately, your request has been rejected");
+            this.notification = "Your request has been rejected.";
+          } else if (documentData.status === "approved") {
+            this.$router.push('/rider-page');
           }
         });
       }
@@ -539,5 +558,29 @@ export default {
   100% {
     transform: rotate(360deg);
   }
+
+}
+
+.notification {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  padding: 10px 20px;
+  background-color: #f44336;
+  color: white;
+  border-radius: 4px;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+  transition: opacity 0.3s;
+}
+
+.notification.active {
+  opacity: 1;
+}
+
+.notification.inactive {
+  opacity: 0;
+  pointer-events: none;
 }
 </style>

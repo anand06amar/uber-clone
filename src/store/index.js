@@ -34,7 +34,7 @@ export default createStore({
 
     //   try{
     //     await signInWithEmailAndPassword(auth, email, password)
-     
+
     //   }catch (error){
     //     switch(error.code){
     //       case 'auth/user-not-found':
@@ -61,7 +61,7 @@ export default createStore({
 
     //   try{
     //     await createUserWithEmailAndPassword(auth, email, password)
-     
+
     //   }catch (error){
     //     switch(error.code){
     //       case 'auth/email-already-in-use':
@@ -114,7 +114,7 @@ export default createStore({
     //     }
     //   })
     // }
-    
+
 
   }
 })
