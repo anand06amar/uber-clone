@@ -9,7 +9,7 @@
 import { onMounted } from 'vue';
 import mapboxgl from 'mapbox-gl';
 import { useRoute } from 'vue-router';
-// import DriverChat from '../components/driverchat.vue';
+import DriverChat from '../components/Chat.vue';
 
 const route = useRoute();
 

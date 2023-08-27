@@ -5,6 +5,7 @@ import HomeView from '../views/HomeView.vue'
 // import SignUp from '../views/SignUp.vue'
 import Search from '../components/Search.vue'
 import Map from '../components/map.vue'
+import riderVue from '@/components/rider.vue'
 
 const routes = [
   {
@@ -58,7 +59,7 @@ const routes = [
   {
     path: '/home',
     name: 'home',
-    component: () => import('../components/Home.vue'),
+    component: () => import('../components/homeview.vue'),
     meta: {
       requiresAuth: true
     }
@@ -77,10 +78,18 @@ const routes = [
 
   },
   {
-    path: '/trip',
-    name: 'Trip',
-    component: () => import('../views/trip.vue')
+    path: '/riderchat',
+    name: 'riderchat',
+    component: () => import('../components/Riderchat.vue')
 
+  },
+  {
+    path: '/trip', // Assuming this is the route to the Favorites page
+    name: 'Trip',
+    component: () => import('../components/Favorites.vue'),
+    meta: {
+      requiresAuth: true // Require authentication to access this route
+    }
   },
   {
     path: '/ride-map',
@@ -91,8 +100,11 @@ const routes = [
   {
     path: '/rider-page',
     name: 'rider-page',
-    component: () => import('../components/rider.vue')
-
+    component: riderVue,
+    props: (route) => ({
+      pickupLocation: route.query.pickupLocation,
+      dropoffLocation: route.query.dropoffLocation,
+    })
   },
   {
     path: '/Search',
@@ -108,6 +120,9 @@ const routes = [
     props: (route) => ({
       pickuplocation: route.query.pickuplocation,
       dropofflocation: route.query.dropofflocation,
+      carName: route.query.carName,
+      price: route.query.price,
+      distance: route.query.distance
     })
 
   }
@@ -118,14 +133,18 @@ const router = createRouter({
   routes
 })
 
-
+// Inside the beforeEach guard
 router.beforeEach((to, from, next) => {
   const user = JSON.parse(localStorage.getItem('user'));
+  console.log('User from localStorage:', user);
+
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
 
   if (requiresAuth && !user) {
+    console.log('User not authenticated. Redirecting to login.');
     next('/login'); // Redirect to the login page if not authenticated
   } else {
+    console.log('User authenticated or route does not require auth. Proceeding.');
     next();
   }
 });

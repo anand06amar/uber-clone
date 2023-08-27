@@ -17,9 +17,7 @@
       <div class="w-full h-2 border-t"></div>
       <div class="w-full text-center border-t-2 p-1.5 text-gray-700 text-lg font-semibold">
       </div>
-      <div v-if="notification" class="notification">
-        {{ notification }}
-      </div>
+
       <div class="choose-ride-text">Choose Your Ride</div>
       <div class="scrollSection">
         <div class="car-item" :class="{ 'active': selectedCar === 'UberX' }" @click="selectCar('UberX')">
@@ -40,7 +38,7 @@
             <img width="75" src="img/uber/comfort.png" alt="Comfort">
             <div class="car-info">
               <div class="text-2xl mb-1">Comfort</div>
-              <div class="car-price">{{ Math.min(50 * distance, 10000) }}</div>
+              <div class="car-price">{{ Math.min(10 * distance, 10000) }}</div>
               <div class="car-time">{{ 2.5 * distance }} mins</div>
             </div>
           </div>
@@ -81,6 +79,8 @@ import {
   where,
 } from 'firebase/firestore';
 import { useRouter } from 'vue-router';
+import Swal from 'sweetalert2';
+
 useRouter();
 export default {
   props: {
@@ -104,9 +104,13 @@ export default {
       selectedCar: null,
       isLoading: true,
       requests: false,
-      notification: null,
+      // price: 10 * distance,
+      carName: "UberX",
 
     };
+  },
+  unmounted() {
+    if (localStorage.getItem('requestId')) localStorage.removeItem('requestId')
   },
   mounted() {
     setTimeout(() => {
@@ -146,10 +150,37 @@ export default {
           // username.value = documentData.username;
           console.log('Document ID:', doc.id, 'Data:', documentData.status);
 
-          if (documentData.status === "rejected") {
+          if (localStorage.getItem("requestId") && doc.id == localStorage.getItem("requestId") && doc.data().Status === "rejected") {
             this.notification = "Your request has been rejected.";
-          } else if (documentData.status === "approved") {
-            this.$router.push('/rider-page');
+
+            // Show a SweetAlert message
+            Swal.fire({
+              title: 'Request Rejected',
+              text: 'Your ride request has been rejected.',
+              icon: 'error',
+            });
+          } else if (localStorage.getItem("requestId") && doc.id == localStorage.getItem("requestId") && doc.data().Status === "approved") {
+            this.notification = "Your request has been accepted.";
+            Swal.fire({
+              title: 'Request Accepted',
+              text: 'Your ride request has been accepted.',
+              icon: 'success',
+            });
+            // this.$router.push('/payment-confirm');
+            const pickupLocation = JSON.parse(localStorage.getItem("request")).pickup;
+            const dropoffLocation = JSON.parse(localStorage.getItem("request")).dropoff;
+            setTimeout(() => {
+              this.$router.push({
+                name: "rider-page",
+                query: {
+                  pickupLocation: pickupLocation,
+                  dropoffLocation: dropoffLocation,
+                  distance: localStorage.getItem("distance"),
+                  price: localStorage.getItem('distance') * 10,
+                  carName: this.carName
+                },
+              }, 1000);
+            })
           }
         });
       }
@@ -175,6 +206,9 @@ export default {
         const docRef = await addDoc(collection(db, 'Requests'), newRequest);
         localStorage.setItem('request', JSON.stringify(newRequest))
         console.log("Request created with id: ", docRef.id)
+        localStorage.setItem('requestId', docRef.id)
+
+
 
       } catch (error) {
         console.error('Error storing user data:', error);
@@ -265,7 +299,7 @@ export default {
             coordinates: pickupCoord,
           },
         },
-      });
+      });  // MapPage,
 
       this.map.addLayer({
         id: "pickupMarker",
@@ -327,7 +361,7 @@ export default {
           this.destinationCoordinate,
           haversineOptions
         );
-
+        localStorage.setItem("distance", distance)
         this.distance = distance.toFixed(2); // Round to 2 decimal places
         this.directionsControl.setOrigin(this.pickupCoordinate);
         this.directionsControl.setDestination(this.destinationCoordinate);

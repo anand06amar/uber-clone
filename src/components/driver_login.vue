@@ -9,7 +9,7 @@
     <form class="register" @submit.prevent="handleLogin">
       <p class="login-register bold-text">
         Already have an account?
-        <router-link class="router-link" :to="{ name: 'login' }">Login</router-link>
+        <router-link class="router-link" :to="{ name: 'login' }">Register</router-link>
       </p>
       <h2 class="bold-text">Create Your UBER Account</h2>
       <div class="inputs">

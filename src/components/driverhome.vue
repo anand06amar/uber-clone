@@ -53,6 +53,8 @@ const acceptRide = async (index) => {
             name: 'ride-map',
             query: {
                 pickuplocation: acceptedRequest.pickup, // Only pass the pickup location
+                dropofflocation: acceptedRequest.dropoff, // Only pass the pickup location
+
             }
         });
     } catch (error) {
