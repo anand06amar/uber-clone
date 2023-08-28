@@ -3,7 +3,7 @@
     <nav class="navbar">
       <div class="logo">Uber</div>
       <ul class="nav-links">
-        <RouterLink to="/trip"><button class="btn">Trip</button></RouterLink>
+
         <button @click="logout">Logout</button>
       </ul>
     </nav>

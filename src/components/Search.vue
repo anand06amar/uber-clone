@@ -36,11 +36,13 @@
         <img class="h-6 w-6 mx-auto" src="https://img.icons8.com/ios/50/000000/plus-math.png" />
       </div>
     </div>
-    <div class="bg-white flex text-l items-center px-4 py-2">
-      <img class="rounded-full bg-gray-400 p-2 mr-2 h-10 w-10"
-        src="https://img.icons8.com/ios-filled/50/ffffff/star--v1.png" />
-      <span>Saved Places</span>
-    </div>
+    <router-link to="/trip">
+      <div class="bg-white flex text-l items-center px-4 py-2 cursor-pointer">
+        <img class="rounded-full bg-gray-400 p-2 mr-2 h-10 w-10"
+          src="https://img.icons8.com/ios-filled/50/ffffff/star--v1.png" />
+        <span>Saved Places</span>
+      </div>
+    </router-link>
     <router-link :to="{
       path: '/confirm',
       query: { pickuplocation: pickuplocation, dropofflocation: dropofflocation }

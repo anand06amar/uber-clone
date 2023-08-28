@@ -37,7 +37,7 @@
           <input type="password" placeholder="confirmPassword" v-model="password" />
           <password class="icon" />
         </div> -->
-        <div v-show="error" class="error">{{ this.errorMsg }}</div>
+        <!-- <div v-show="error" class="error">{{ this.errorMsg }}</div> -->
       </div>
       <button type="submit" class="signup-button">Sign Up</button>
       <button @click.prevent="googleSignUp" class="google-button">Sign Up with Google</button>
